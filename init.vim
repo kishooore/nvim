@@ -27,6 +27,7 @@ call plug#begin('~/.config/nvim/plugged')
   Plug 'vim-test/vim-test'
   Plug 'SirVer/ultisnips'
   Plug 'honza/vim-snippets'
+  Plug 'vim-syntastic/syntastic'
 call plug#end()
 
 set syntax=yes
@@ -208,16 +209,16 @@ let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 " If you want :UltiSnipsEdit to split your window.
 let g:UltiSnipsEditSplit="vertical"
 
-" let g:syntastic_java_checkers = ['checkstyle']
-" let g:syntastic_java_checkstyle_classpath = './lsp/java/checkstyle-8.4-all.jar'
-" let g:syntastic_java_checkstyle_conf_file = './lsp/java/checkstyle.xml'
-" 
+let g:syntastic_java_checkers = ['checkstyle']
+let g:syntastic_java_checkstyle_classpath = '/home/kgarapati/.config/nvim/lsp/java/checkstyle-8.14-all.jar'
+let g:syntastic_java_checkstyle_conf_file = '/home/kgarapati/.config/nvim/lsp/java/checkstyle.xml'
+
 " set statusline+=%#warningmsg#
 " set statusline+=%{SyntasticStatuslineFlag()}
 " set statusline+=%*
-" 
-" let g:syntastic_always_populate_loc_list = 1
-" let g:syntastic_auto_loc_list = 1
-" let g:syntastic_check_on_open = 1
-" let g:syntastic_check_on_wq = 0
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
 
