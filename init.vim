@@ -39,7 +39,7 @@ set splitbelow
 set expandtab
 set autoindent
 set cindent
-set softtabstop=2 shiftwidth=2
+set softtabstop=4 shiftwidth=4
 set background=dark
 colorscheme dracula
 
