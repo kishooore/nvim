@@ -1,0 +1,101 @@
+snippet ets-controller "description"
+package com.ecd.ets.controller;
+
+import static java.util.stream.Collectors.toList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import javax.validation.Valid;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.MediaTypes;
+import org.springframework.hateoas.server.ExposesResourceFor;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.ecd.ets.config.EtsLogger;
+import com.ecd.ets.exception.constants.StatusCode;
+import com.ecd.ets.exception.exceptions.ConflictException;
+import com.ecd.ets.exception.exceptions.ForbiddenException;
+import com.ecd.ets.utils.ETSConstants;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.extensions.Extension;
+import io.swagger.v3.oas.annotations.extensions.ExtensionProperty;
+
+@ExposesResourceFor($1.class)
+@RestController
+@RequestMapping(value = "$2", produces = { MediaTypes.HAL_JSON_VALUE })
+public class $1Controller extends BaseController {
+
+    private static final EtsLogger LOGGER = EtsLogger.getLogger($1Controller.class);
+
+    @Operation(summary = "Create $3",
+        extensions = {
+            @Extension(name = ETSConstants.DOCUMENT_EIM_RESPONSE_EVENT,
+                properties = @ExtensionProperty(name = ETSConstants.SUBJECT,
+                    value = ETSConstants.DOCUMENT_EIM_RESPONSE_EVENT_VALUE))})
+    @Transactional
+    @PostMapping
+    public HttpEntity<EntityModel<$1>> create$1(@RequestBody @Valid $1 $4) {
+        return new ResponseEntity<>(null, HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "delete $3 by id")
+    @Transactional
+    @DeleteMapping(path ="/{$4Id}")
+    public HttpEntity<Void> delete$1(@PathVariable("$4Id") String $4Id) {
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Operation(summary = "Update $3 by id",
+        extensions = {
+            @Extension(name = ETSConstants.DOCUMENT_EIM_REQUEST_EVENT,
+                properties = @ExtensionProperty(name = ETSConstants.SUBJECT,
+                    value = "request.path.$4Id")),
+            @Extension(name = ETSConstants.DOCUMENT_EIM_RESPONSE_EVENT,
+                properties = @ExtensionProperty(name = ETSConstants.SUBJECT,
+                    value = ETSConstants.DOCUMENT_EIM_RESPONSE_EVENT_VALUE))})
+    @Transactional
+    @PutMapping(path = "/{$4Id}", consumes = { MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE })
+    public HttpEntity<EntityModel<$1>> update$1(
+            @PathVariable("$4Id") String $4Id,
+            @RequestBody @Valid $1 $4) {
+        return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Get $3 by id",
+        extensions = {
+            @Extension(name = ETSConstants.DOCUMENT_EIM_REQUEST_RESPONSE_EVENT_OPTIONS,
+                properties = @ExtensionProperty(name = ETSConstants.DISABLED,
+                    value = ETSConstants.TRUE))})
+    @GetMapping(path = "/{$4Id}")
+    public HttpEntity<EntityModel<$1>> get$1(@PathVariable("$4Id") String $4Id) {
+        return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Get all $3",
+        extensions = {
+            @Extension(name = ETSConstants.DOCUMENT_EIM_REQUEST_RESPONSE_EVENT_OPTIONS,
+                properties = @ExtensionProperty(name = ETSConstants.DISABLED,
+                    value = ETSConstants.TRUE))})
+    @GetMapping
+    public HttpEntity<CollectionModel<EntityModel<$1>>> getAll$1s() {
+        return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+}
+endsnippet
