@@ -27,7 +27,7 @@ call plug#begin('~/.config/nvim/plugged')
   Plug 'vim-test/vim-test'
   Plug 'SirVer/ultisnips'
   Plug 'honza/vim-snippets'
-  Plug 'vim-syntastic/syntastic'
+"  Plug 'vim-syntastic/syntastic'
 call plug#end()
 
 set syntax=yes
@@ -47,6 +47,8 @@ nnoremap <leader>j <C-w>j
 nnoremap <leader>k <C-w>k
 nnoremap <leader>h <C-w>h
 nnoremap <leader>l <C-w>l
+
+nnoremap <Leader>s :%s/\<<C-r><C-w>\>//g<Left><Left>
 
 nnoremap Y y$
 nnoremap n nzz
@@ -209,16 +211,16 @@ let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 " If you want :UltiSnipsEdit to split your window.
 let g:UltiSnipsEditSplit="vertical"
 
-let g:syntastic_java_checkers = ['checkstyle']
-let g:syntastic_java_checkstyle_classpath = '/home/kgarapati/.config/nvim/lsp/java/checkstyle-8.14-all.jar'
-let g:syntastic_java_checkstyle_conf_file = '/home/kgarapati/.config/nvim/lsp/java/checkstyle.xml'
+" let g:syntastic_java_checkers = ['checkstyle']
+" let g:syntastic_java_checkstyle_classpath = '/home/kgarapati/.config/nvim/lsp/java/checkstyle-8.14-all.jar'
+" let g:syntastic_java_checkstyle_conf_file = '/home/kgarapati/.config/nvim/lsp/java/checkstyle.xml'
 
 " set statusline+=%#warningmsg#
 " set statusline+=%{SyntasticStatuslineFlag()}
 " set statusline+=%*
 
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
+" let g:syntastic_always_populate_loc_list = 1
+" let g:syntastic_auto_loc_list = 1
+" let g:syntastic_check_on_open = 1
+" let g:syntastic_check_on_wq = 0
 
