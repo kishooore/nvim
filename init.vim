@@ -2,7 +2,6 @@ let mapleader=" "
 call plug#begin('~/.config/nvim/plugged')
   Plug 'mfussenegger/nvim-jdtls'
   Plug 'mfussenegger/nvim-dap'
-  Plug 'dracula/vim'
   Plug 'nvim-lua/popup.nvim'
   Plug 'nvim-lua/plenary.nvim'
   Plug 'nvim-telescope/telescope.nvim'
@@ -27,21 +26,26 @@ call plug#begin('~/.config/nvim/plugged')
   Plug 'vim-test/vim-test'
   Plug 'SirVer/ultisnips'
   Plug 'honza/vim-snippets'
+  Plug 'NTBBloodbath/rest.nvim'
+  Plug 'lifepillar/vim-solarized8'
 "  Plug 'vim-syntastic/syntastic'
 call plug#end()
 
-set syntax=yes
 set number relativenumber
 set nohlsearch incsearch
-set colorcolumn=80
 set splitright
 set splitbelow
 set expandtab
 set autoindent
 set cindent
 set softtabstop=4 shiftwidth=4
+syntax on " This is required
+hi Normal ctermbg=none
+highlight NonText ctermbg=none
+
 set background=dark
-colorscheme dracula
+colorscheme solarized8
+
 
 nnoremap <leader>j <C-w>j
 nnoremap <leader>k <C-w>k
@@ -87,6 +91,7 @@ augroup highlight_yank
     au TextYankPost * silent! lua vim.highlight.on_yank{higroup="IncSearch", timeout=150}
 augroup END
 
+
 " java lsp
 augroup lsp
    au!
@@ -99,6 +104,7 @@ augroup typscipt
   au FileType typescript,javascript lua require("lsp.typescript.setup") 
   au FileType typescript,javascript lua require("lsp.linter.setup") 
 augroup end
+
 
 " Telescope
 nnoremap <leader><leader> <cmd>Telescope git_files<cr>
@@ -173,6 +179,35 @@ inoremap <silent><expr> <C-e>     compe#close('<C-e>')
 inoremap <silent><expr> <C-f>     compe#scroll({ 'delta': +4 })
 inoremap <silent><expr> <C-d>     compe#scroll({ 'delta': -4 })
 
+lua << EOF
+require("rest-nvim").setup({
+    -- Open request results in a horizontal split
+    result_split_horizontal = false,
+    -- Skip SSL verification, useful for unknown certificates
+    skip_ssl_verification = false,
+    -- Highlight request on run
+    highlight = {
+        enabled = true,
+        timeout = 150,
+    },
+    -- Jump to request line on run
+    jump_to_request = false,
+    })
+
+
+local parser_configs = require("nvim-treesitter.parsers").get_parser_configs()
+parser_configs.http = {
+  install_info = {
+    url = "https://github.com/NTBBloodbath/tree-sitter-http",
+    files = { "src/parser.c" },
+    branch = "main",
+  },
+}
+
+EOF
+
+nnoremap <leader>ht :lua require('rest-nvim').run()<CR>
+
 " Treesitter
 lua << EOF
 require'nvim-treesitter.configs'.setup {
@@ -224,3 +259,30 @@ let g:UltiSnipsEditSplit="vertical"
 " let g:syntastic_check_on_open = 1
 " let g:syntastic_check_on_wq = 0
 
+" fold java imports
+lua << EOF
+function foldJavaImports()
+    local start_index, end_index = 0, 0
+    local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+    for index,line in pairs(lines) do
+        if string.find(line, 'import ') then
+            start_index = index - 1
+            break
+        end
+    end
+    for index,line in pairs(lines) do
+        if string.find(line, 'import ') then
+            end_index = index - 1
+        end
+    end
+    local distance  = end_index - start_index
+    if (distance > 5) then
+        vim.cmd('normal gg' .. start_index .. 'jzf' .. distance .. 'j')
+    end
+end
+EOF
+
+"augroup foldJavaImport
+"   au!
+"   au FileType java lua foldJavaImports()
+"augroup end

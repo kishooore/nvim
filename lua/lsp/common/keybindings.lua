@@ -23,6 +23,8 @@ function M.setup()
   local opts = { noremap=true, silent=true }
   buf_set_keymap('n', 'gD', ':LspDeclaration<CR>', opts)
   buf_set_keymap('n', 'gd', ':LspDef<CR>', opts)
+  buf_set_keymap('n', 'gi', ':LspImplementation<CR>', opts)
+  buf_set_keymap('n', 'gr', ':LspRefs<CR>', opts)
   buf_set_keymap('n', 'K', ':LspHover<CR>', opts)
   buf_set_keymap('n', '<C-k>', ':LspSignatureHelp<CR>', opts)
   buf_set_keymap('n', 'gh', ':Lspsaga lsp_finder<CR>', opts)
