@@ -28,9 +28,11 @@ call plug#begin('~/.config/nvim/plugged')
   Plug 'honza/vim-snippets'
   Plug 'NTBBloodbath/rest.nvim'
   Plug 'lifepillar/vim-solarized8'
+  Plug 'simrat39/rust-tools.nvim'
 "  Plug 'vim-syntastic/syntastic'
 call plug#end()
 
+set signcolumn=yes
 set number relativenumber
 set nohlsearch incsearch
 set splitright
@@ -103,6 +105,11 @@ augroup typscipt
   au!
   au FileType typescript,javascript lua require("lsp.typescript.setup") 
   au FileType typescript,javascript lua require("lsp.linter.setup") 
+augroup end
+
+augroup rust
+   au!
+   au FileType rust lua require("lsp.rust.setup")
 augroup end
 
 
@@ -286,3 +293,5 @@ EOF
 "   au!
 "   au FileType java lua foldJavaImports()
 "augroup end
+"
+lua require('rust-tools').setup({})
