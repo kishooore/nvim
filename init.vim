@@ -6,6 +6,7 @@ call plug#begin('~/.config/nvim/plugged')
   Plug 'nvim-lua/plenary.nvim'
   Plug 'nvim-telescope/telescope.nvim'
   Plug 'hrsh7th/nvim-compe'
+  Plug 'tpope/vim-fugitive'
   Plug 'onsails/lspkind-nvim'
   Plug 'glepnir/lspsaga.nvim'
   Plug 'nvim-telescope/telescope-dap.nvim'
@@ -14,7 +15,6 @@ call plug#begin('~/.config/nvim/plugged')
   Plug 'nvim-treesitter/playground'
   Plug 'preservim/nerdtree'
   Plug 'neovim/nvim-lspconfig'
-  Plug 'tpope/vim-fugitive'
   Plug 'ryanoasis/vim-devicons'
   Plug 'hoob3rt/lualine.nvim'
   Plug 'diepm/vim-rest-console'
@@ -27,11 +27,20 @@ call plug#begin('~/.config/nvim/plugged')
   Plug 'SirVer/ultisnips'
   Plug 'honza/vim-snippets'
   Plug 'NTBBloodbath/rest.nvim'
+  Plug 'rktjmp/lush.nvim'
+  "Plug 'joshdick/onedark.vim'
+  "Plug 'ellisonleao/gruvbox.nvim'
+  "Plug 'ayu-theme/ayu-vim'
   Plug 'lifepillar/vim-solarized8'
   Plug 'simrat39/rust-tools.nvim'
+  Plug 'towolf/vim-helm'
+  Plug 'mtdl9/vim-log-highlighting'
+  Plug 'karb94/neoscroll.nvim'
+  Plug '907th/vim-auto-save'
 "  Plug 'vim-syntastic/syntastic'
 call plug#end()
 
+set termguicolors
 set signcolumn=yes
 set number relativenumber
 set nohlsearch incsearch
@@ -46,8 +55,20 @@ hi Normal ctermbg=none
 highlight NonText ctermbg=none
 
 set background=dark
+"let ayucolor="dark"
+"colorscheme gruvbox
+"colorscheme onedark
 colorscheme solarized8
 
+let g:auto_save = 1  " enable AutoSave on Vim startup
+
+inoremap ( ()<Esc>i
+inoremap { {}<Esc>i
+inoremap {<CR> {<CR>}<Esc>O
+inoremap [ []<Esc>i
+inoremap < <><Esc>i
+inoremap ' ''<Esc>i
+inoremap " ""<Esc>i
 
 nnoremap <leader>j <C-w>j
 nnoremap <leader>k <C-w>k
@@ -56,6 +77,7 @@ nnoremap <leader>l <C-w>l
 
 nnoremap <Leader>s :%s/\<<C-r><C-w>\>//g<Left><Left>
 
+nnoremap <leader>y "*y
 nnoremap Y y$
 nnoremap n nzz
 nnoremap N Nzz
@@ -148,10 +170,8 @@ nnoremap <silent><leader>dn :lua require'dap'.continue()<CR>
 nnoremap <silent><leader>dk :lua require'dap'.up()<CR>
 nnoremap <silent><leader>dj :lua require'dap'.down()<CR>
 nnoremap <silent><leader>d_ :lua require'dap'.run_last()<CR>
-nnoremap <silent><leader>di :lua require'dap.ui.variables'.hover(function () return vim.fn.expand("<cexpr>") end)<CR>
-vnoremap <silent><leader>di :lua require'dap.ui.variables'.visual_hover()<CR>
-nnoremap <silent><leader>d? :lua require'dap.ui.variables'.scopes()<CR>
-
+nnoremap <silent><leader>di :lua require('dap.ui.widgets').hover()<CR>
+vnoremap <silent><leader>di :lua require('dap.ui.widgets').hover()<CR>
 nnoremap <silent><leader>dr :lua require'dap'.repl.open({}, 'vsplit')<CR><C-w>l
 
 " Plug 'nvim-telescope/telescope-dap.nvim'
@@ -230,6 +250,12 @@ lua << EOF
 require('lualine').setup()
 EOF
 
+lua << EOF
+require'lspconfig'.groovyls.setup{
+    cmd = { "java", "-jar", "/home/kgarapati/groovy-language-server/build/libs/groovy-language-server-all.jar" }
+}
+EOF
+
 " vimwiki
 let g:vimwiki_list = [{'path': '~/vimwiki/',
                       \ 'syntax': 'markdown', 'ext': '.md'}]
@@ -295,3 +321,59 @@ EOF
 "augroup end
 "
 lua require('rust-tools').setup({})
+
+" presentation mode
+noremap <Left> :silent bp<CR> :redraw!<CR>
+noremap <Right> :silent bn<CR> :redraw!<CR>
+nmap <F5> :set relativenumber! number! showmode! showcmd! hidden! ruler!<CR>
+nmap <F2> :call DisplayPresentationBoundaries()<CR>
+nmap <F3> :call FindExecuteCommand()<CR>
+
+" jump to slides
+nmap <F9> :call JumpFirstBuffer()<CR> :redraw!<CR>
+nmap <F10> :call JumpSecondToLastBuffer()<CR> :redraw!<CR>
+nmap <F11> :call JumpLastBuffer()<CR> :redraw!<CR>
+
+let g:presentationBoundsDisplayed = 0
+function! DisplayPresentationBoundaries()
+  if g:presentationBoundsDisplayed
+    match
+    set colorcolumn=0
+    let g:presentationBoundsDisplayed = 0
+  else
+    highlight lastoflines ctermbg=darkred guibg=darkred
+    match lastoflines /\%23l/
+    set colorcolumn=80
+    let g:presentationBoundsDisplayed = 1
+  endif
+endfunction
+
+function! FindExecuteCommand()
+  let line = search('\S*!'.'!:.*')
+  if line > 0
+    let command = substitute(getline(line), "\S*!"."!:*", "", "")
+    execute "silent !". command
+    execute "normal gg0"
+    redraw
+  endif
+endfunction
+
+function! JumpFirstBuffer()
+  execute "buffer 1"
+endfunction
+
+function! JumpSecondToLastBuffer()
+  execute "buffer " . (len(Buffers()) - 1)
+endfunction
+
+function! JumpLastBuffer()
+  execute "buffer " . len(Buffers())
+endfunction
+
+function! Buffers()
+  let l:buffers = filter(range(1, bufnr('$')), 'bufexists(v:val)')
+  return l:buffers
+endfunction
+
+lua require('neoscroll').setup()
+

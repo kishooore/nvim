@@ -40,7 +40,6 @@ function M.setup()
     vim.cmd("command! LspTestNearest lua require'jdtls'.test_nearest_method()<CR>")
     vim.cmd("command! LspExtractVariable lua require('jdtls').extract_variable(true)<CR>")
     vim.cmd("command! LspExtractMethod lua require('jdtls').extract_method(true)<CR>")
-    vim.cmd("command! LspCodeAction lua require('jdtls').code_action()<CR>")
 
     buf_set_keymap("n", "<leader>di", ":LspOrganizeJavaImports<CR>", opts)
     buf_set_keymap("n", "<leader>tc", ":LspTestClass<CR>", opts)
@@ -77,6 +76,9 @@ function M.setup()
       completion = {
         favoriteStaticMembers = {
           "org.mockito.Mockito.*",
+          "org.assertj.core.api.Assertions.*",
+          "java.util.stream.Collectors.*",
+          "java.util.Collections.singletonList.*",
           "org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*",
           "org.springframework.test.web.servlet.result.MockMvcResultMatchers.*"
         }
